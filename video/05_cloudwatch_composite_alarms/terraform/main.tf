@@ -12,6 +12,17 @@ resource "aws_vpc" "vpc1" {
   }
 }
 
+resource "tls_private_key" "this" {
+  algorithm = "RSA"
+}
+
+module "key_pair" {
+  source = "terraform-aws-modules/key-pair/aws"
+
+  key_name   = "csmithaws"
+  public_key = tls_private_key.this.public_key_openssh
+}
+
 resource "aws_internet_gateway" "igw1" {
   vpc_id = "${aws_vpc.vpc1.id}"
   tags = {
